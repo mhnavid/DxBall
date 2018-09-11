@@ -3,6 +3,7 @@ package nvd.hasan.dxball;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.support.v7.app.ActionBar;
@@ -22,25 +23,35 @@ public class InGameView extends View {
     private Activity activity;
     private int Score=0;
     private int life = 3;
+    private int level = 0;
     private ArrayList<Brick> bricks;
-
-
-    //private Ball ball;
     private Bar bar;
     private Ball ball;
-    public InGameView(Context context, Activity activity) {
+
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
+    public InGameView(Context context, Activity activity, int level, int score) {
         super(context);
         this.activity = activity;
         this.context = context;
+        this.Score = score;
+        this.level = level;
+//        GameActivity gameActivity = (GameActivity) getContext().getApplicationContext();
+//        sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE);
         bar = new Bar();
         ball = new Ball(30);
         bricks = new ArrayList<>();
-        for (int i=0;i<10;i++){
+        int brickNumber = 15;
+        if (level == 2){
+            brickNumber = 20;
+        }
+        for (int i=0;i<brickNumber;i++){
             if (i%2==0){
-                bricks.add(new Brick(Color.parseColor("#00796B"),1));
+                bricks.add(new Brick(Color.parseColor("#00796B"),2));
             }
             else {
-                bricks.add(new Brick(Color.parseColor("#0097A7"),2));
+                bricks.add(new Brick(Color.parseColor("#0097A7"),3));
             }
         }
     }
@@ -67,11 +78,28 @@ public class InGameView extends View {
                 bricks.get(i).setCoords(brickX, brickY, brickHeight, brickWidth);
                 brickX += brickWidth;
             }
+
             brickX = 0;
             brickY = brickHeight;
             for (int i = 5; i < 10; i++) {
                 bricks.get(i).setCoords(brickX,brickY,brickHeight,brickWidth);
                 brickX+=brickWidth;
+            }
+
+            brickX = 0;
+            brickY = brickHeight*2;
+            for (int i = 10; i < 15; i++) {
+                bricks.get(i).setCoords(brickX,brickY,brickHeight,brickWidth);
+                brickX+=brickWidth;
+            }
+
+            if (level==2){
+                brickX = 0;
+                brickY = brickHeight*4;
+                for (int i = 15; i < 20; i++) {
+                    bricks.get(i).setCoords(brickX,brickY,brickHeight,brickWidth);
+                    brickX+=brickWidth;
+                }
             }
             first=FALSE;
         }
@@ -90,21 +118,36 @@ public class InGameView extends View {
                 bricks.remove(b);
                 ball.barCollusion();
                 Score+=b.getType();
+
+                if (bricks.size()==0){
+                    if (level==1){
+                        Intent intent=new Intent(context,GameActivity.class);
+                        intent.putExtra("score",Score);
+                        intent.putExtra("level",2);
+                        context.startActivity(intent);
+                        activity.finish();
+                    }
+                    else {
+                        Intent intent=new Intent(context,GameOver.class);
+                        intent.putExtra("score",Score);
+                        context.startActivity(intent);
+                        activity.finish();
+                    }
+                }
+
                 break;
             }
         }
 
         if (ball.getDown() >= bar.getTop()){
             if (ball.getRight() > bar.getLeft() && ball.getRight() < bar.getRight()  || ball.getLeft()<bar.getRight() && ball.getLeft()>bar.getLeft() ){
-                Log.d("ballpos","crossed");
-                // Log.d("ballpos", "bar " +bar.getLeftTopX() +"  "+bar.getRightDownX()+" ball "+ball.getLeftTopX() +"  "+ball.getRightDownX());
                 ball.barCollusion();
                 invalidate();
             }
             else {
                 if (ball.getDown()>=maxHeight){
                     Log.d("ballpos","Game OVer");
-                    if (life!=0){
+                    if (life!=1){
                         life-=1;
                         ball.setCoordinates((int) (maxWidth * 0.2), (int) (maxHeight - (maxHeight * .3)));
                         ball.barCollusion();
@@ -113,7 +156,9 @@ public class InGameView extends View {
                     else {
                         Log.d("ballpos","Game OVer");
                         Intent intent=new Intent(context,GameOver.class);
+                        intent.putExtra("score",Score);
                         context.startActivity(intent);
+                        activity.finish();
                     }
                 }
                 else {
@@ -142,7 +187,7 @@ public class InGameView extends View {
     private void updateScore(){
         //activity.updateActionBar(
         ActionBar actionBar=((GameActivity)activity).getSupportActionBar();
-        actionBar.setTitle(String.valueOf("Score : "+Score +" Life : "+life));
+        actionBar.setTitle(String.valueOf("Score : "+Score +" Life : "+life+" Level : "+level));
     }
 
 

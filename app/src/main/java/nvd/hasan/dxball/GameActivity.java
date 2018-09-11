@@ -7,15 +7,21 @@ import android.view.MotionEvent;
 
 public class GameActivity extends AppCompatActivity {
     private InGameView gameView;
-    int c=0;
-
+    int level=1;
+    int score=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        gameView=new InGameView(GameActivity.this,GameActivity.this);
+        Intent intent = getIntent();
+
+        if (intent.hasExtra("level")) {
+            level = intent.getExtras().getInt("level",1);
+            score= intent.getExtras().getInt("score",0);
+        }
+
+        gameView=new InGameView(GameActivity.this,GameActivity.this, level, score);
         setContentView(gameView);
-        //getSupportActionBar().hide();
         gameView.setBackgroundColor(getResources().getColor(R.color.colorBg));
     }
 

@@ -59,7 +59,7 @@ public class Ball {
     }
 
     public void barCollusion(){
-        speedY= speedY*-1;
+        speedY = speedY*-1;
         ballCenterX += speedX;
         ballCenterY += speedY;
     }
