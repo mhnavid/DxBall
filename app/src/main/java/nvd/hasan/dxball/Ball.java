@@ -8,16 +8,15 @@ public class Ball {
     private int ballCenterX;
     private int ballCenterY;
     private int ballRadius;
-    private int speed;
+    private int speedX, speedY;
     private int maxWidth;
     private int maxHeight;
     Paint paint;
     Thread thread;
 
-    public Ball(int ballCenterX, int ballCenterY, int ballRadius) {
-        this.ballCenterX = ballCenterX;
-        this.ballCenterY = ballCenterY;
+    public Ball( int ballRadius) {
         this.ballRadius = ballRadius;
+        paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.parseColor("#519c3f"));
 
@@ -29,82 +28,74 @@ public class Ball {
         });
     }
 
-    public int getBallCenterX() {
-        return ballCenterX;
+    public void setCoordinates(int x, int y){
+        ballCenterX = x;
+        ballCenterY = y;
     }
 
-    public void setBallCenterX(int ballCenterX) {
-        this.ballCenterX = ballCenterX;
-    }
-
-    public int getBallCenterY() {
-        return ballCenterY;
-    }
-
-    public void setBallCenterY(int ballCenterY) {
-        this.ballCenterY = ballCenterY;
-    }
-
-    public int getBallRadius() {
-        return ballRadius;
-    }
-
-    public void setMax(int X, int Y) {
-        this.maxWidth=X;
-        this.maxHeight=Y;
-    }
-
-    public void setSpeed(int speed) {
-        this.speed=speed;
-    }
-
-    public void setBallRadius(int ballRadius) {
-        this.ballRadius = ballRadius;
-    }
 
     public void drawBall(Canvas canvas){
-        canvas.drawCircle(getBallCenterX(), getBallCenterY(), getBallRadius(), paint);
+        canvas.drawCircle(ballCenterX, ballCenterY, ballRadius, paint);
+        thread.run();
     }
 
     public void ballPositionUpdate(){
         if (ballCenterX+ballRadius > maxWidth){
-            speed = speed*-1;
+            speedX = speedX*-1;
         }
         else if (ballCenterX-ballRadius < 0){
-            speed = speed *-1;
+            speedX = speedX *-1;
         }
 
         if (ballCenterY+ballRadius > maxHeight){
-            speed = speed*-1;
+            speedY = speedY*-1;
         }
         else if (ballCenterY-ballRadius < 0){
-            speed = speed*-1;
+            speedY = speedY*-1;
         }
 
-        ballCenterX += speed;
-        ballCenterY += speed;
+        ballCenterX = ballCenterX + speedX;
+        ballCenterY = ballCenterY + speedY;
     }
 
     public void barCollusion(){
-        speed= speed*-1;
-        ballCenterX += speed;
-        ballCenterY += speed;
+        speedY= speedY*-1;
+        ballCenterX += speedX;
+        ballCenterY += speedY;
+    }
+
+    public int getLeftTopX() {
+        return 0;
+    }
+
+    public int getLeftTopY() {
+        return 0;
+    }
+
+    public void setMax(int x, int y){
+        this.maxWidth = x;
+        this.maxHeight = y;
+    }
+
+    public void setSpeed(int x, int y){
+        this.speedX = x;
+        this.speedY = y;
     }
 
     public int getLeft() {
-        return ballCenterX-ballRadius;
+        return this.ballCenterX-this.ballRadius;
     }
 
     public int getRight() {
-        return ballCenterX+ballRadius;
+        return this.ballCenterX+this.ballRadius;
     }
 
     public int getTop() {
-        return ballCenterY-ballRadius;
+        return this.ballCenterY-this.ballRadius;
     }
 
     public int getDown() {
-        return ballCenterY+ballRadius;
+        return this.ballCenterY+this.ballRadius;
     }
 
 }
