@@ -37,11 +37,11 @@ public class InGameView extends View {
         Log.d("scsize",String.valueOf(maxWidth+", "+maxHeight));
 
         if (first){
-            bar.setCoordinates((int)((maxWidth/2)-150),(int)(maxHeight-120),(int)(40),(int)(340));
+            bar.setCoordinates((int)((maxWidth/2)-150),(int)(maxHeight-120),(int)(60),(int)(370));
             ball.setCoordinates((int)(maxWidth*0.2),(int)(maxHeight-(maxHeight*.3)));
             Log.d("scsize",String.valueOf(maxWidth+", "+maxHeight));
             ball.setSpeed(10, 10);
-            bar.setSpeed(20, 20);
+            bar.setSpeed(50, 50);
             first=FALSE;
         }
         bar.drawBar(canvas);
