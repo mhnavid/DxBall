@@ -31,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
         scoreBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(MainActivity.this, HighScore.class);
+                startActivity(intent);
             }
         });
 

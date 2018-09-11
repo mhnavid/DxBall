@@ -1,5 +1,6 @@
 package nvd.hasan.dxball;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
@@ -31,4 +32,9 @@ public class GameActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(GameActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
 }
