@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
-        startBtn = findViewById(R.id.startBtn);
+        startBtn = findViewById(R.id.restartBtn);
         scoreBtn = findViewById(R.id.scoreBtn);
         exitBtn = findViewById(R.id.exitBtn);
 
