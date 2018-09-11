@@ -2,10 +2,14 @@ package nvd.hasan.dxball;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
+
+import java.util.ArrayList;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -17,6 +21,8 @@ public class InGameView extends View {
     private Context context;
     private Activity activity;
     private int Score=0;
+    private int life = 3;
+    private ArrayList<Brick> bricks;
 
 
     //private Ball ball;
@@ -25,8 +31,18 @@ public class InGameView extends View {
     public InGameView(Context context, Activity activity) {
         super(context);
         this.activity = activity;
+        this.context = context;
         bar = new Bar();
         ball = new Ball(30);
+        bricks = new ArrayList<>();
+        for (int i=0;i<10;i++){
+            if (i%2==0){
+                bricks.add(new Brick(Color.parseColor("#00796B"),1));
+            }
+            else {
+                bricks.add(new Brick(Color.parseColor("#0097A7"),2));
+            }
+        }
     }
 
     @Override
@@ -42,11 +58,41 @@ public class InGameView extends View {
             Log.d("scsize",String.valueOf(maxWidth+", "+maxHeight));
             ball.setSpeed(10, 10);
             bar.setSpeed(50, 50);
+            int brickX = 0;
+            int brickY = 0;
+            int brickHeight = (int) (maxHeight * .1);
+            int brickWidth = (int) maxWidth / 5;
+
+            for (int i = 0; i < 5; i++) {
+                bricks.get(i).setCoords(brickX, brickY, brickHeight, brickWidth);
+                brickX += brickWidth;
+            }
+            brickX = 0;
+            brickY = brickHeight;
+            for (int i = 5; i < 10; i++) {
+                bricks.get(i).setCoords(brickX,brickY,brickHeight,brickWidth);
+                brickX+=brickWidth;
+            }
             first=FALSE;
         }
+
+        for (Brick b : bricks){
+            b.draw(canvas);
+        }
+
         bar.drawBar(canvas);
         ball.drawBall(canvas);
-        //updateScore();
+        updateScore();
+
+        for (Brick b : bricks ){
+            if (ball.getRight() >= b.getLeft() && ball.getLeft() <= b.getRight() && ball.getTop() <= b.getDown() && ball.getDown() >= b.getTop()) {
+                Log.d("ballpos","bar hit");
+                bricks.remove(b);
+                ball.barCollusion();
+                Score+=b.getType();
+                break;
+            }
+        }
 
         if (ball.getDown() >= bar.getTop()){
             if (ball.getRight() > bar.getLeft() && ball.getRight() < bar.getRight()  || ball.getLeft()<bar.getRight() && ball.getLeft()>bar.getLeft() ){
@@ -58,6 +104,17 @@ public class InGameView extends View {
             else {
                 if (ball.getDown()>=maxHeight){
                     Log.d("ballpos","Game OVer");
+                    if (life!=0){
+                        life-=1;
+                        ball.setCoordinates((int) (maxWidth * 0.2), (int) (maxHeight - (maxHeight * .3)));
+                        ball.barCollusion();
+                        invalidate();
+                    }
+                    else {
+                        Log.d("ballpos","Game OVer");
+                        Intent intent=new Intent(context,GameOver.class);
+                        context.startActivity(intent);
+                    }
                 }
                 else {
                     invalidate();
@@ -85,7 +142,7 @@ public class InGameView extends View {
     private void updateScore(){
         //activity.updateActionBar(
         ActionBar actionBar=((GameActivity)activity).getSupportActionBar();
-        actionBar.setTitle(String.valueOf("Score : "+Score++));
+        actionBar.setTitle(String.valueOf("Score : "+Score +" Life : "+life));
     }
 
 

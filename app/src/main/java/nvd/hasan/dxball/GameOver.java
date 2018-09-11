@@ -1,14 +1,21 @@
 package nvd.hasan.dxball;
 
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class GameOver extends AppCompatActivity {
 
     Button restartBtn, homeBtn, exitBtn;
+    private MediaPlayer mMediaPlayer;
+    TextView scoreView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,5 +48,20 @@ public class GameOver extends AppCompatActivity {
                 System.exit(1);
             }
         });
+        playSound();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
+    private void playSound(){
+        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer = MediaPlayer.create(this, soundUri);
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mMediaPlayer.start();
+
     }
 }
