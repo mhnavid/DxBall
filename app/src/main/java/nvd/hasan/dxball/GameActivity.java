@@ -1,7 +1,5 @@
 package nvd.hasan.dxball;
 
-import android.content.Context;
-import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
